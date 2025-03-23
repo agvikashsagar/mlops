@@ -1,6 +1,150 @@
 # Kubeflow Pipelines Installation and Usage
 
+
+
+
+# Minikube Setup and Kubernetes Dashboard Access
+
+This document outlines the steps taken to start Minikube, address potential issues, and access the Kubernetes Dashboard.
+
+## Minikube Startup and Issue Resolution
+
+1.  **Initial Minikube Start Attempt (VirtualBox Driver):**
+
+    ```bash
+    minikube start
+    ```
+
+    Output:
+
+    ```
+    * minikube v1.35.0 on Microsoft Windows 11 Home 10.0.26100.3476 Build 26100.3476
+    E0323 12:10:25.117285  27356 start.go:812] api.Load failed for minikube: filestore "minikube": Docker machine "minikube" does not exist. Use "docker-machine ls" to list machines. Use "docker-machine create" to add a new one.
+    * Using the virtualbox driver based on existing profile
+    * Starting "minikube" primary control-plane node in "minikube" cluster
+    * Creating virtualbox VM (CPUs=2, Memory=4000MB, Disk=20000MB) ...
+    ! StartHost failed, but will try again: creating host: create: precreate: This computer doesn't have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory
+    * Creating virtualbox VM (CPUs=2, Memory=4000MB, Disk=20000MB) ...
+    * Failed to start virtualbox VM. Running "minikube delete" may fix it: creating host: create: precreate: This computer doesn't have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory
+
+    X Exiting due to HOST_VIRT_UNAVAILABLE: Failed to start host: creating host: create: precreate: This computer doesn't have VT-X/AMD-v enabled. Enabling it in the BIOS is mandatory
+    * Suggestion: Virtualization support is disabled on your computer. If you are running minikube within a VM, try '--driver=docker'. Otherwise, consult your systems BIOS manual for how to enable virtualization.
+    * Related issues:
+      - [https://github.com/kubernetes/minikube/issues/3900](https://github.com/kubernetes/minikube/issues/3900)
+      - [https://github.com/kubernetes/minikube/issues/4730](https://github.com/kubernetes/minikube/issues/4730)
+    ```
+
+    **Note:** This failed due to VT-X/AMD-v being disabled.
+
+2.  **Attempt to Start with Docker Driver (Incorrectly):**
+
+    ```bash
+    minikube start --driver=docker
+    ```
+
+    Output:
+
+    ```
+    * minikube v1.35.0 on Microsoft Windows 11 Home 10.0.26100.3476 Build 26100.3476
+    E0323 12:11:24.879311  13124 start.go:812] api.Load failed for minikube: filestore "minikube": Docker machine "minikube" does not exist. Use "docker-machine ls" to list machines. Use "docker-machine create" to add a new one.
+
+    ! Exiting due to GUEST_DRIVER_MISMATCH: The existing "minikube" cluster was created using the "virtualbox" driver, which is incompatible with requested "docker" driver.
+    * Suggestion: Delete the existing 'minikube' cluster using: 'minikube delete', or start the existing 'minikube' cluster using: 'minikube start --driver=virtualbox'
+    ```
+
+    **Note:** This failed because a previous `minikube` instance existed with the `virtualbox` driver.
+
+3.  **Delete Existing Minikube Instance:**
+
+    ```bash
+    minikube delete
+    ```
+
+    Output:
+
+    ```
+    * Removed all traces of the "minikube" cluster.
+    ```
+
+4.  **Start Minikube with Docker Driver (Correctly):**
+
+    ```bash
+    minikube start --driver=docker
+    ```
+
+    Output:
+
+    ```
+    * minikube v1.35.0 on Microsoft Windows 11 Home 10.0.26100.3476 Build 26100.3476
+    * Using the docker driver based on user configuration
+    * Using Docker Desktop driver with root privileges
+    * Starting "minikube" primary control-plane node in "minikube" cluster
+    * Pulling base image v0.0.46 ...
+        > gcr.io/k8s-minikube/kicbase...:  500.31 MiB / 500.31 MiB  100.00% 29.27 M
+    * Creating docker container (CPUs=2, Memory=4000MB) ...
+    ! Failing to connect to [https://registry.k8s.io/](https://registry.k8s.io/) from inside the minikube container
+    * To pull new external images, you may need to configure a proxy: [https://minikube.sigs.k8s.io/docs/reference/networking/proxy/](https://minikube.sigs.k8s.io/docs/reference/networking/proxy/)
+    * Preparing Kubernetes v1.32.0 on Docker 27.4.1 ...
+      - Generating certificates and keys ...
+      - Booting up control plane ...
+      - Configuring RBAC rules ...
+    * Configuring bridge CNI (Container Networking Interface) ...
+    * Verifying Kubernetes components...
+      - Using image gcr.io/k8s-minikube/storage-provisioner:v5
+    * Enabled addons: storage-provisioner, default-storageclass
+    * Done! kubectl is now configured to use "minikube" cluster and "default" namespace by default
+    ```
+
+    **Note:** A warning about connectivity to `registry.k8s.io` was issued.
+
+5.  **Verify Minikube Status:**
+
+    ```bash
+    minikube status
+    ```
+
+    Output:
+
+    ```
+    minikube
+    type: Control Plane
+    host: Running
+    kubelet: Running
+    apiserver: Running
+    kubeconfig: Configured
+    ```
+
+## Kubernetes Dashboard Access
+
+1.  **Start Kubernetes Dashboard:**
+
+    ```bash
+    minikube dashboard
+    ```
+
+    Output:
+
+    ```
+    * Enabling dashboard ...
+      - Using image docker.io/kubernetesui/metrics-scraper:v1.0.8
+      - Using image docker.io/kubernetesui/dashboard:v2.7.0
+    * Some dashboard features require the metrics-server addon. To enable all features please run:
+
+            minikube addons enable metrics-server
+
+    * Verifying dashboard health ...
+    * Launching proxy ...
+    * Verifying proxy health ...
+    * Opening [http://127.0.0.1:60014/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/](http://127.0.0.1:60014/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/) in your default browser...
+    ```
+
+    **Note:** This command opens the Kubernetes Dashboard in the default web browser.
+
+This document provides a clear record of the steps and issues encountered during the Minikube setup and Kubernetes Dashboard access.
+
 This document outlines the steps taken to install Kubeflow Pipelines and execute a pipeline.
+
+
 
 ## Installation
 
