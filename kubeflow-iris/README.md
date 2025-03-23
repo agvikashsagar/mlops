@@ -261,3 +261,7 @@ This document outlines the steps taken to install Kubeflow Pipelines and execute
 ![img_1.png](img_1.png)
 
 ![img_2.png](img_2.png)
+
+## Sources
+
+* [iQuantC/Kubeflow-pipeline](https://github.com/iQuantC/Kubeflow-pipeline) - Used as a reference and inspiration for Kubeflow pipeline implementation.
